@@ -1,5 +1,6 @@
 import googleSheetsApi from "./googleSheetsApi";
-import parseGoogleSheetData from "./parseGoogleSheetsData";
+import parseGoogleSheetsData from "./parseGoogleSheetsData";
+import formatGoogleSheetsData from "./formatGoogleSheetsData";
 
 const getDocInfo = () => {
     console.debug('googleSheetsService.getDocInfo()');
@@ -8,12 +9,12 @@ const getDocInfo = () => {
 
 const getAll = async () => {
     console.debug('googleSheetsService.getAll()');
-    return parseGoogleSheetData(await googleSheetsApi.getAll());
+    return parseGoogleSheetsData(await googleSheetsApi.getAll());
 }
 
 const append = (data) => {
-    console.debug('googleSheetsService.append');
-    return googleSheetsApi.addRow(data)
+    console.debug('googleSheetsService.append', data);
+    return googleSheetsApi.addRow(formatGoogleSheetsData(data))
 }
 
 const googleSheetsService = {

@@ -2,7 +2,6 @@ import { compareDesc } from 'date-fns';
 import { parseDate } from '../utils/date';
 import { calculatePriceAfterTaxes, getPriceFromString, unformat } from '../utils/money';
 
-
 const parseWorker = (rawString) => rawString;
 
 const createOperation = (name) => {
@@ -16,9 +15,15 @@ const createOperation = (name) => {
     });
 }
 
-const parseOperations = (rawString, date) => rawString
-    .split(';,')
-    .map(createOperation);
+const parseOperations = (rawString) => {
+    if (!rawString) {
+        return []
+    }
+
+    return rawString
+        .split(';,')
+        .map(createOperation);
+}
 
 const parsePriceCell = (priceString) => {
     return unformat(priceString)
@@ -36,10 +41,10 @@ const transformRow = (row, i) => Object.freeze(
     }
 );
 
-const parseGoogleSheetData = (dataSet) => {
+const parseGoogleSheetsData = (dataSet) => {
     return dataSet
         .map(transformRow)
         .sort((a, b) => compareDesc(a.date, b.date));
 }
 
-export default parseGoogleSheetData;
+export default parseGoogleSheetsData;
