@@ -9,14 +9,18 @@ googleSheetsController.use((req, res, next) => {
     next();
 });
 
-// define the home page route
+googleSheetsController.get('/info', async (req, res) => {
+    const result = await googleSheetsService.getDocInfo();
+    res.send(result);
+});
+
 googleSheetsController.get('/', async (req, res) => {
-    const data = await googleSheetsService.getAll();
-    res.send(data);
+    const result = await googleSheetsService.getAll();
+    res.send(result);
 });
 
 googleSheetsController.post('/', async (req, res) => {
-    const result = await googleSheetsService.append(JSON.parse(req.body));
+    const result = await googleSheetsService.append(req.body);
     res.send(result);
 });
 
