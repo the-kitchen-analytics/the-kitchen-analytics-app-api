@@ -26,7 +26,7 @@ const { PORT } = process.env;
 if (PORT) {
     const customHandlers = [
         {
-            path: '/api',
+            path: '/api/data',
             handler: googleSheetsController
         }
     ];
