@@ -12,9 +12,9 @@ const getAll = async () => {
     return parseGoogleSheetsData(await googleSheetsApi.getAll());
 }
 
-const append = (data) => {
+const append = async (data) => {
     console.debug('googleSheetsService.append', data);
-    return googleSheetsApi.addRow(formatGoogleSheetsData(data))
+    return await googleSheetsApi.addRow(formatGoogleSheetsData(data))
 }
 
 const googleSheetsService = {

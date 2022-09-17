@@ -1,11 +1,16 @@
 import express, { json, urlencoded } from "express";
 import cors from 'cors';
-import dotenv from "dotenv";
-import { googleSheetsController } from './googleSheets';
+import { errorHandler, logErrors } from "./handlers";
+import * as routes from "./routes";
+import applicationConfig from "./config/applicationConfig";
 
-dotenv.config();
+const init = ({ port, customRoutes }) => {
+    console.debug('Start init server.');
 
-const init = ({ port, customHandlers = [] }) => {
+    process.on('uncaughtException', err => {
+        console.error('uncaughtException', err);
+    });
+
     // Initialize express
     const app = express();
     // parse JSON
@@ -16,30 +21,29 @@ const init = ({ port, customHandlers = [] }) => {
     const corsOptions = {
         origin: '*',
         credentials: true,            //access-control-allow-credentials:true
-        optionSuccessStatus: 200,
+        optionSuccessStatus: 200
     }
 
-    app.use(cors(corsOptions)) // Use this after the variable declaration
+    app.use(cors(corsOptions)); // Use this after the variable declaration
 
-    // add custom handlers
-    customHandlers.forEach(({ path, handler }) => app.use(path, handler))
+    // add custom route handlers
+    customRoutes.forEach(({ path, handler }) => app.use(path, handler));
+
+    // error handlers
+    app.use(logErrors);
+    app.use(errorHandler);
 
     app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
+        console.log(`Server is running on port ${port}.`);
+        console.debug('Finish init server.')
     });
 }
 
-const { PORT } = process.env;
+const { port } = applicationConfig
 
-if (PORT) {
-    const customHandlers = [
-        {
-            path: '/api/data',
-            handler: googleSheetsController
-        }
-    ];
-
-    init({ port: PORT, customHandlers });
+if (port) {
+    const customRoutes = [...Object.values(routes)];
+    init({ port, customRoutes });
 } else {
-    console.error('Port is not specified.', PORT);
+    console.error('Port is not specified.', port);
 }

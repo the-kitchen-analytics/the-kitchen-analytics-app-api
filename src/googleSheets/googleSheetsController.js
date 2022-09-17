@@ -9,19 +9,31 @@ googleSheetsController.use((req, res, next) => {
     next();
 });
 
-googleSheetsController.get('/info', async (req, res) => {
-    const result = await googleSheetsService.getDocInfo();
-    res.send(result);
+googleSheetsController.get('/info', async (req, res, next) => {
+    try {
+        const result = await googleSheetsService.getDocInfo();
+        res.send(result);
+    } catch (e) {
+        return next(e);
+    }
 });
 
-googleSheetsController.get('/', async (req, res) => {
-    const result = await googleSheetsService.getAll();
-    res.send(result);
+googleSheetsController.get('/', async (req, res, next) => {
+    try {
+        const result = await googleSheetsService.getAll();
+        res.send(result);
+    } catch (e) {
+        return next(e);
+    }
 });
 
-googleSheetsController.post('/', async (req, res) => {
-    const result = await googleSheetsService.append(req.body);
-    res.send(result);
+googleSheetsController.post('/', async (req, res, next) => {
+    try {
+        const result = await googleSheetsService.append(req.body);
+        res.send(result);
+    } catch (e) {
+        return next(e);
+    }
 });
 
 
